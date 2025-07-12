@@ -1,0 +1,77 @@
+# Unity - Gerekli .gitignore
+
+# Unity tarafından üretilen geçici dosyalar
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Auto-generated packages
+[Pp]ackageCache/
+*.booproj
+*.user
+*.userprefs
+*.pidb
+*.suo
+*.sln
+*.csproj
+*.tmproj
+*.unityproj
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Crash Reports
+sysinfo.txt
+
+# Android
+.gradle/
+*.apk
+*.aar
+*.dex
+*.apk.meta
+
+# iOS
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xcworkspace
+*.xcuserstate
+
+# Asset Store Tools
+Assets/AssetStoreTools*
+
+# Unity Cloud Build
+.builds/
+
+# Unity Collaborate
+.collab/
+
+# Git LFS locks
+*.lfs
+
+# Unity cache
+UnityCache/
+
+# Burst cache
+.burst/
+
+# Logs (optional)
+*.log
