@@ -36,12 +36,6 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    public void Start()
-    {
-        Init(); // Initialize the game manager
-        GameStart(); // Automatically start the game when the scene loads
-    }
-
     public void Init()
     {
         // Find and assign references to player and spawn manager
@@ -71,15 +65,22 @@ public class GameManager : MonoBehaviour
         LoadLevel("Game");
     }
 
+    public void LoadMainMenu()
+    {
+        LoadLevel("MainMenu");
+    }
+
     // This method is called when the scene is loaded
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         Init(); // Initialize GameManager with updated scene references
-        UIManager.Instance.Init(); // Initialize UIManager with updated scene references
 
-        GameStart();
+        if (scene.name == "Game")
+        {
+            GameStart();
+        }
     }
 
 

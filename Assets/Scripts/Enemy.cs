@@ -17,6 +17,17 @@ public class Enemy : MonoBehaviour
     public ParticleSystem deathParticles;
     public float deathParticleScaleMin = 0.1f;
     public float deathParticleScaleMax = 0.6f;
+
+    void OnEnable()
+    {
+        PlayerController.onPlayerDied += OnPlayerDeath;
+    }
+
+    void OnDisable()
+    {
+        PlayerController.onPlayerDied -= OnPlayerDeath;
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,6 +69,10 @@ public class Enemy : MonoBehaviour
         {
             Die();
         }
+    }
+
+    public void OnPlayerDeath() {
+        StartCoroutine(Wander());
     }
 
     public IEnumerator Wander()

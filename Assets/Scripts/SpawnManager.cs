@@ -50,13 +50,12 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleGameOver()
     {
-        StartCoroutine(StopSpawningEnemies());
+        StopSpawningEnemies();
     }
 
-    private IEnumerator StopSpawningEnemies()
+    private void StopSpawningEnemies()
     {
         isSpawnActive = false;
-        yield return new WaitForSeconds(0.5f);
 
         if (spawnCoroutine != null)
         {
@@ -79,8 +78,9 @@ public class SpawnManager : MonoBehaviour
     {
         for (int i = 0; i < spawnCount; i++)
         {
+
             Vector3 spawnPosition = GetRandomSpawnPosition();
-            GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+            Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         }
     }
 

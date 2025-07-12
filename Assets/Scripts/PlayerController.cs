@@ -35,6 +35,12 @@ public class PlayerController : MonoBehaviour
         MovePlayer();
         ShootProjectile();
         LimitHealth();
+
+        if (Input.GetKey(KeyCode.I))
+        {
+            Die();
+        }
+
     }
 
     void GetInput()
