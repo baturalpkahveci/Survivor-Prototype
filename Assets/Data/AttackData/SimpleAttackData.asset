@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea445c36c037dda42a479195d57b5c2a, type: 3}
+  m_Name: SimpleAttackData
+  m_EditorClassIdentifier: 
+  attackName: Simple Attack
+  projectilePrefab: {fileID: 9100489759024777672, guid: f5d87dff8565c874c96569975ebd691f, type: 3}
+  damage: 35
+  cooldown: 0.7

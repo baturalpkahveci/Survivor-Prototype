@@ -4,7 +4,10 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject enemyPrefab;       // Enemy prefab to spawn
-    public float spawnTime = 1f;         // Time interval between spawns
+    public GameObject[] upgradePickup;   // Upgrade pickup prefabs to spawn
+    public float enemySpawnTime = 1f;         // Time interval between enemy spawns
+    public float upgradeSpawnTime = 15f;    // Time interval between upgrade spawns
+    public float upgradeYSpawnOffset = 0.5f;  // Y axis offset for upgrade spawns
     public float spawnOffset = 5f; // Distance from the visible screen edge
     public float spawnBoundsX = 10f;     // X-axis range around the player
     public float spawnBoundsZ = 10f;     // Z-axis range around the player
@@ -12,7 +15,9 @@ public class SpawnManager : MonoBehaviour
     private GameObject player;
     private PlayerController playerController;
     private bool isSpawnActive = false;
-    private Coroutine spawnCoroutine;
+    private bool isUpgradeSpawnActive = false;
+    private Coroutine enemySpawnCoroutine;
+    private Coroutine upgradeSpawnCoroutine;
 
     private void OnEnable()
     {
@@ -28,59 +33,114 @@ public class SpawnManager : MonoBehaviour
         GameManager.onGameOver -= HandleGameOver;
     }
 
-    void Start()
-    {
-        // Find the player GameObject by its tag
-        player = GameObject.FindWithTag("Player");
-        playerController = player.GetComponent<PlayerController>();
-        isSpawnActive = GameManager.Instance.isGameActive;
-        // Start the enemy spawning coroutine
-        StartCoroutine(StartSpawningEnemies());
-    }
-
     private void HandleGameStart()
     {
-        isSpawnActive = true;
-        if (spawnCoroutine != null)
+        if (player == null)
         {
-            StopCoroutine(spawnCoroutine);
+            player = GameObject.FindWithTag("Player");
+            playerController = player.GetComponent<PlayerController>();
         }
-        spawnCoroutine = StartCoroutine(StartSpawningEnemies());
+
+        if (enemySpawnCoroutine != null)
+        {
+            StopCoroutine(enemySpawnCoroutine);
+        }
+
+        if (upgradeSpawnCoroutine != null)
+        {
+            StopCoroutine(upgradeSpawnCoroutine);
+        }
+
+        StartSpawningEnemies();
+        StartSpawningUpgrades();
     }
 
     private void HandleGameOver()
     {
         StopSpawningEnemies();
+        StopSpawningUpgrades();
     }
 
-    private void StopSpawningEnemies()
+    public void StopSpawningEnemies()
     {
         isSpawnActive = false;
 
-        if (spawnCoroutine != null)
+        if (enemySpawnCoroutine != null)
         {
-            StopCoroutine(spawnCoroutine);
-            spawnCoroutine = null;
+            StopCoroutine(enemySpawnCoroutine);
+            enemySpawnCoroutine = null;
         }
     }
 
-    IEnumerator StartSpawningEnemies()
+    public void StartSpawningEnemies()
+    {
+        isSpawnActive = true;
+        enemySpawnCoroutine = StartCoroutine(StartSpawningEnemiesCoroutine());
+    }
+
+    IEnumerator StartSpawningEnemiesCoroutine()
     {
         while (isSpawnActive)
         {
             SpawnEnemy();
-            yield return new WaitForSeconds(spawnTime);
+            yield return new WaitForSeconds(enemySpawnTime);
         }
     }
 
     // Spawn one or more enemies outside the camera view
-    void SpawnEnemy(int spawnCount = 1)
+    public void SpawnEnemy(int spawnCount = 1)
     {
+        if (enemyPrefab == null)
+        {
+            Debug.Log("There isnt any assigned enemies in " + name);
+            return;
+        }
+
         for (int i = 0; i < spawnCount; i++)
         {
-
             Vector3 spawnPosition = GetRandomSpawnPosition();
             Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        }
+    }
+
+    public void StopSpawningUpgrades()
+    {
+        isUpgradeSpawnActive = false;
+        if (upgradeSpawnCoroutine != null)
+        {
+            StopCoroutine(upgradeSpawnCoroutine);
+            upgradeSpawnCoroutine = null;
+        }
+    }
+
+    public void StartSpawningUpgrades()
+    {
+        isUpgradeSpawnActive = true;
+        upgradeSpawnCoroutine = StartCoroutine(StartSpawningUpgradesCoroutine());
+    }
+    IEnumerator StartSpawningUpgradesCoroutine()
+    {
+        while (isUpgradeSpawnActive)
+        {
+            SpawnUpgrade();
+            yield return new WaitForSeconds(upgradeSpawnTime);
+        }
+    }
+
+    public void SpawnUpgrade(int spawnCount = 1)
+    {
+        if (upgradePickup.Length == 0)
+        {
+            Debug.Log("There is no upgrade prefabs assigned to spawn in " + name);
+            return;
+        }
+
+        for (int i = 0; i < spawnCount; i++)
+        {
+            Vector3 spawnPosition = GetRandomSpawnPosition();
+            Vector3 spawnOffset = new Vector3(0, upgradeYSpawnOffset, 0);
+            GameObject upgradeToSpawn = upgradePickup[Random.Range(0, upgradePickup.Length)];
+            Instantiate(upgradeToSpawn, spawnPosition + spawnOffset, Quaternion.identity);
         }
     }
 

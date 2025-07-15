@@ -11,10 +11,7 @@ public class PlayerController : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
     public GameObject cameraObject;
-
-    public GameObject projectilePrefab;
-    public float projectileSpwanOffset = 1.5f;
-
+    public AttackComponent attackComponent;
     public ParticleSystem deathParticles;
     public float deathParticleScale = 0.1f;
 
@@ -24,8 +21,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        health = maxHealth;
-        UpdateHealthUI();
+        attackComponent = GetComponent<AttackComponent>();
+        ResetPlayer();
     }
 
     void Update()
@@ -33,20 +30,33 @@ public class PlayerController : MonoBehaviour
         if (isDead) return; // Prevent further updates if player is dead
         GetInput();
         MovePlayer();
-        ShootProjectile();
+        AttackInput();
         LimitHealth();
+        CheckBounds();
 
+        // Self destruct for testing purposes, also haha funny
         if (Input.GetKey(KeyCode.I))
         {
             Die();
         }
-
     }
 
     void GetInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+    }
+
+    void AttackInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            attackComponent.TryAttack(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            attackComponent.TryAttack(1);
+        }
     }
 
     void MovePlayer()
@@ -75,19 +85,13 @@ public class PlayerController : MonoBehaviour
             health = 0;
         }
     }
-    void ShootProjectile()
-    {
-        if (Input.GetMouseButtonDown(0)) // Left mouse button click
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 2f);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-            {
-                Vector3 direction = (hit.point - transform.position).normalized;
-                Quaternion rotation = Quaternion.LookRotation(direction); // face the hit point
-                Instantiate(projectilePrefab, transform.position + direction * projectileSpwanOffset, rotation); // spawn with correct forward
-            }
+    void CheckBounds()
+    {
+        if (transform.position.y < -20f)
+        {
+            Debug.Log("Player is out of bounds in y-axis. Killing player...");
+            Die();
         }
     }
 

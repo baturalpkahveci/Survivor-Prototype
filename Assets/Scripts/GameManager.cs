@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     public GameObject spawnManager;
     public bool isGameActive = false;
 
+    public int score;
+    public float timeElapsed;
+
     public delegate void OnScoreChanged(int score);
     public static event OnScoreChanged onScoreChanged;
     public static event Action onGameStart;
@@ -49,14 +52,14 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         ResetLevel(); // Reset game data when starting a new game
         onGameStart?.Invoke(); // Notify that the game has started
-        Debug.Log("Game Started! Score reset to: " + data.score);
+        Debug.Log("Game Started! Score reset to: " + score);
     }
 
     public void GameOver()
     {
         isGameActive = false;
         onGameOver?.Invoke(); // Notify that the game is over
-        Debug.Log("Game Over! Final Score: " + data.score);
+        Debug.Log("Game Over! Final Score: " + score);
     }
 
     public void LoadGameLevel()
@@ -96,7 +99,7 @@ public class GameManager : MonoBehaviour
             if (playerController != null)
             {
                 playerController.ResetPlayer(); // Reset player state
-                //Stop spawning enemies
+                spawnManagerScript.StopSpawningEnemies();
             }
         }
     }
@@ -108,14 +111,14 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        data.score += amount;
-        UpdateScoreUI(data.score);
+        score += amount;
+        UpdateScoreUI(score);
     }
 
-    public void SetScore(int score)
+    public void SetScore(int newScore)
     {
-        data.score = score;
-        UpdateScoreUI(data.score);
+        score = newScore;
+        UpdateScoreUI(score);
     }
 
     public void UpdateScoreUI(int score)
