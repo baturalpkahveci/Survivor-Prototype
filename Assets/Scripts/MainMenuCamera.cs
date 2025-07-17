@@ -14,7 +14,7 @@ public class MainMenuCamera : MonoBehaviour
 
     void SetCamera()
     {
-        player.GetComponent<PlayerController>().enabled = false;
+        //player.GetComponent<PlayerController>().enabled = false;
         cameraFocalPoint.SetActive(false);
     }
 }
